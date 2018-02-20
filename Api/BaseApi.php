@@ -13,6 +13,7 @@ abstract class BaseApi
     public static $jsonMime = "application/json";
     public static $defaultMime = "application/octet-stream";
     public static $urlencodedMime = "application/x-www-form-urlencoded";
+    public static $xmlMime = "application/xml";
 
     public function sendRequest($uri, $header = null, $body = null, $method = "POST") {
         $curl = curl_init();
@@ -59,5 +60,18 @@ abstract class BaseApi
         return $rt;
     }
 
+    public static function toObject($array) {
+        $obj = new \stdClass();
+        foreach ($array as $key => $val) {
+            $obj->$key = is_array($val) ? self::toObject($val) : $val;
+        }
+        return $obj;
+    }
+
+
+
     public abstract function send($to, $message, $cc = '');
+    public function catchHook($arr = null) {
+        //VIRTUAL
+    }
 }

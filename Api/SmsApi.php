@@ -11,19 +11,20 @@ namespace Api;
 
 class SmsApi extends BaseApi
 {
-    const uri = 'https://textbelt.com/text';
-    public function send($to, $message, $cc = '')
+    const uri = 'https://rest.nexmo.com/sms/json';
+    public function send($to, $message, $sender = 'Pemrograma Game A')
     {
         $header = [
             'Content-Type' => self::$defaultMime
         ];
         $body = [
-            'phone' => $to,
-            'message' => $message,
-            'key' => ApiToken::sms
+            'from' => $sender,
+            'text' => $message,
+            'to' => $to,
+            'api_key' => ApiToken::sms,
+            'api_secret' => ApiToken::smsSecret
         ];
 
-        $req = self::makeRequest($header, $body);
-        return self::sendRequest(self::uri, $req);
+        return self::sendRequest(self::uri, $header, $body);
     }
 }
