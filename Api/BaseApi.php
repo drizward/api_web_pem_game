@@ -12,19 +12,31 @@ abstract class BaseApi
 {
     public static $jsonMime = "application/json";
     public static $defaultMime = "application/octet-stream";
+    public static $urlencodedMime = "application/x-www-form-urlencoded";
 
-    public function makeRequest($header, $body, $method = "POST") {
-        return stream_context_create([
-            'http' => [
-                'header' => str_replace("=", ": ", http_build_query($header, '', '\r\n')),
-                'method' => $method,
-                'body' => json_encode($body)
-            ]
-        ]);
-    }
+    public function sendRequest($uri, $header = null, $body = null, $method = "POST") {
+        $curl = curl_init();
+        if(is_null($header))
+            $header = ['Content-Type' => self::$defaultMime];
 
-    public function sendRequest($uri, $context) {
-        return file_get_contents($uri, false, $context);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $uri,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => $method,
+            CURLOPT_POSTFIELDS => is_null($body) ? null : json_encode($body),
+            CURLOPT_HTTPHEADER => self::serializeHeader($header)
+        ));
+
+        $res = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        return $err? "cURL Error #:" . $err : $res;
     }
 
     public static function randomize($max, $numOnly = false) {
@@ -37,6 +49,15 @@ abstract class BaseApi
             $r .= $c;
         }
         return $r;
+    }
+
+    public static function serializeHeader($header) {
+        $rt = [];
+        foreach($header as $k => $v) {
+            $rt[] = "$k: $v";
+        }
+        print_r($rt);
+        return $rt;
     }
 
     public abstract function send($to, $message, $cc = '');

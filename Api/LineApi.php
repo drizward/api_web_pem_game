@@ -11,14 +11,14 @@ namespace Api;
 
 class LineApi extends BaseApi
 {
-    const auth = 'Bearer '.ApiToken::line;
+    const auth = "Bearer ".ApiToken::line;
     const uri = 'https://api.line.me/v2/bot/message/push';
 
     public function send($to, $message, $cc = '')
     {
         $header = [
-            'Content-Type' => self::$jsonMime,
-            'Authorization' => self::auth
+            'Authorization' => self::auth,
+            'Content-Type' => self::$jsonMime
         ];
         $body = [
             'to' => $to,
@@ -30,7 +30,6 @@ class LineApi extends BaseApi
             ]
         ];
 
-        $req = self::makeRequest($header, $body);
-        return self::sendRequest(self::uri, $req);
+        return self::sendRequest(self::uri, $header, $body);
     }
 }
