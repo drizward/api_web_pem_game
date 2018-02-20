@@ -56,7 +56,6 @@ abstract class BaseApi
         foreach($header as $k => $v) {
             $rt[] = "$k: $v";
         }
-        print_r($rt);
         return $rt;
     }
 
