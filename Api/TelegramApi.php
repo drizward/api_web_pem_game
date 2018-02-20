@@ -24,7 +24,6 @@ class TelegramApi extends BaseApi
             'text' => $message
         ];
 
-        $req = self::makeRequest($header, $body);
-        return self::sendRequest(self::uri, $req);
+        return self::sendRequest(self::uri, $header, $body);
     }
 }

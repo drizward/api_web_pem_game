@@ -27,7 +27,6 @@ class FacebookApi extends BaseApi
             ]
         ];
 
-        $req = self::makeRequest($header, $body);
-        return self::sendRequest(self::uri, $req);
+        return self::sendRequest(self::uri, $header, $body);
     }
 }

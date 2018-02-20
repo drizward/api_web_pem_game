@@ -25,7 +25,6 @@ class WhatsappApi extends BaseApi
         ];
         $body = null;
 
-        $req = self::makeRequest($header, $body);
-        return self::sendRequest(self::uri.http_build_query($params), $req);
+        return self::sendRequest(self::uri.http_build_query($params), $header, $body);
     }
 }
